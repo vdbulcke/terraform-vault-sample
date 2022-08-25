@@ -31,8 +31,8 @@ resource "vault_pki_secret_backend_root_cert" "vault_pki_ca" {
 // Doc: https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/pki_secret_backend_config_urls
 resource "vault_pki_secret_backend_config_urls" "config_urls" {
   backend                 = vault_mount.pki.path
-  issuing_certificates    = ["https://vault.home.lab/v1/pki/ca"]
-  crl_distribution_points = ["https://vault.home.lab/v1/pki/crl"]
+  issuing_certificates    = ["https://vault.internal.e-corp.com/v1/pki/ca"]
+  crl_distribution_points = ["https://vault.internal.e-corp.com/v1/pki/crl"]
   ## WARNING: Vault does NOT host its own OCSP Responder
   ##          This url thus point to a external OCSP responder server 
   ##          That you have to host your self (e.g. https://github.com/T-Systems-MMS/vault-ocsp)
@@ -61,8 +61,8 @@ resource "vault_pki_secret_backend_role" "server_role" {
 
   ## SAN Restriction 
   allowed_domains = [
-    "home.lab",
-    "kube.home.lab"
+    "internal.e-corp.com",
+    "kube.internal.e-corp.com"
   ]
   allow_subdomains = true
   allow_localhost  = true

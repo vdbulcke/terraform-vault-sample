@@ -32,8 +32,8 @@ resource "vault_pki_secret_backend_root_cert" "vault_ec_pki_ca" {
 // Doc: https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/pki_secret_backend_config_urls
 resource "vault_pki_secret_backend_config_urls" "ec_config_urls" {
   backend                 = vault_mount.ecpki.path
-  issuing_certificates    = ["https://iamvault.ta.belgium.be/v1/ecpki/ca"]
-  crl_distribution_points = ["https://iamvault.ta.belgium.be/v1/ecpki/crl"]
+  issuing_certificates    = ["https://iamvault.internal.e-corp.com/v1/ecpki/ca"]
+  crl_distribution_points = ["https://iamvault.internal.e-corp.com/v1/ecpki/crl"]
   ## WARNING: Vault does NOT host its own OCSP Responder
   ##          This url thus point to a external OCSP responder server 
   ##          That you have to host your self (e.g. https://github.com/T-Systems-MMS/vault-ocsp)
@@ -63,8 +63,8 @@ resource "vault_pki_secret_backend_role" "ec_server_role" {
 
   ## SAN Restriction 
   allowed_domains = [
-    "home.lab",
-    "kube.home.lab"
+    "internal.e-corp.com",
+    "kube.internal.e-corp.com"
   ]
   allow_subdomains = true
   allow_localhost  = true

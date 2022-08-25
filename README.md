@@ -85,6 +85,8 @@ export VAULT_TOKEN=root-token
     * `global/user-selfservice-password-reset` => allow user to reset their own userpass credentials and activate MFA TOTP.
     * `global/vault-admin` => Vault admin policy 
     * `global/dev-team` => allow to issue certificates from the PKI backend, and have their own secret base `secret/dev-team/`.
+    * `global/mfa-users` => group that can be used for an MFA enforcement.
+
 
 
 * `policies_env.tf` => create policies for each env DEV, ACC, PROD (via `modules/policies/common`)

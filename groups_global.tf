@@ -31,3 +31,12 @@ resource "vault_identity_group" "global_vault_dev_team" {
   policies                   = ["global/dev-team"]
   external_member_entity_ids = true
 }
+
+
+## https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/identity_group
+resource "vault_identity_group" "global_mfa" {
+  name                       = "global/mfa-users"
+  type                       = "internal"
+  policies                   = []
+  external_member_entity_ids = true
+}

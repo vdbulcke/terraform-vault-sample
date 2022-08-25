@@ -39,6 +39,15 @@ variable "vault_userpass_entity_aliases" {
 /**** Groups Assignment *****/
 
 ##
+## Vault MFA Users
+##
+variable "vault_mfa_users" {
+  description = "Vault mfa users"
+  type        = list(string)
+  default     = []
+}
+
+##
 ## Vault Admin Users
 ##
 variable "vault_admin_users" {

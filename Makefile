@@ -1,4 +1,7 @@
 
+full-demo: cleanup init apply create-users 
+
+
 fmt:
 	terraform fmt
 
@@ -14,3 +17,11 @@ init:
 
 cleanup:
 	./cleanup.sh
+
+
+create-users: 
+	./tutorial/create_users.sh
+
+
+apply:
+	terraform apply -auto-approve

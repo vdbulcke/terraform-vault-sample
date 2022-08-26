@@ -1,3 +1,15 @@
+## Secret environments
+variable "secret_env_list" {
+  description = "List of secret environments"
+  type        = list(string)
+  default = [
+    "dev",
+    "acc",
+    "prod"
+  ]
+}
+
+
 ##
 ## ALL Vault Users
 ##

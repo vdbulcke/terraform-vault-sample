@@ -61,10 +61,11 @@ variable "vault_admin_users" {
 ##
 ## Dev Users
 ##
-variable "dev_team_users" {
-  description = "DEV Team users"
+variable "pki_team_users" {
+  description = "PKI Team users"
   type        = list(string)
   default = [
+    "bob@e-corp.com",
     "charlie@e-corp.com",
     "david@e-corp.com"
   ]
@@ -107,7 +108,7 @@ variable "acc_admin_users" {
   type        = list(string)
   default = [
     "bob@e-corp.com",
-    "charlie@e-corp.com"
+    "david@e-corp.com"
   ]
 }
 
@@ -118,6 +119,7 @@ variable "acc_readonly_users" {
   description = "Acc Readonly users"
   type        = list(string)
   default = [
+    "charlie@e-corp.com",
     "fred@e-corp.com"
   ]
 }
@@ -141,7 +143,7 @@ variable "prod_readonly_users" {
   description = "Prod Readonly users"
   type        = list(string)
   default = [
-    "charlie@e-corp.com",
+    "david@e-corp.com",
     "fred@e-corp.com"
   ]
 }

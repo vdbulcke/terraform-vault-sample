@@ -84,7 +84,7 @@ export VAULT_TOKEN=root-token
     * `global/user-management` => allow to create userpass credentials, entities, groups, and manage group membership
     * `global/user-selfservice-password-reset` => allow user to reset their own userpass credentials and activate MFA TOTP.
     * `global/vault-admin` => Vault admin policy 
-    * `global/dev-team` => allow to issue certificates from the PKI backend, and have their own secret base `secret/dev-team/`.
+    * `global/pki-team` => allow to issue certificates from the PKI backend
     * `global/mfa-users` => group that can be used for an MFA enforcement.
 
 
@@ -106,7 +106,7 @@ Groups are used to map to a policies, so that group membership can be used to as
 * `groups_global.tf` => for global policies
     * `global/user-selfservice-password-reset` 
     * `global/vault-admin`
-    * `global/dev-team` 
+    * `global/pki-team` 
 
 
 * `groups_env.tf` => for env policies
@@ -180,3 +180,11 @@ variable "vault_admin_users" {
 ```
 
 >NOTE: see `variables.tf` for all groups assignment example.
+
+
+
+### MFA
+
+References: 
+
+- https://learn.hashicorp.com/tutorials/vault/active-directory-mfa-login-totp

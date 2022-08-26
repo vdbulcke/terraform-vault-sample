@@ -25,10 +25,10 @@ resource "vault_identity_group" "global_vault_admin" {
 
 
 ## https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/identity_group
-resource "vault_identity_group" "global_vault_dev_team" {
-  name                       = "global/dev-team"
+resource "vault_identity_group" "global_vault_pki_team" {
+  name                       = "global/pki-team"
   type                       = "internal"
-  policies                   = ["global/dev-team"]
+  policies                   = ["global/pki-team"]
   external_member_entity_ids = true
 }
 

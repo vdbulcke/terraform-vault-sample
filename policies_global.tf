@@ -90,7 +90,7 @@ resource "vault_policy" "vault-admin" {
 
 
 ## https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/policy
-resource "vault_policy" "dev_team_policy" {
-  name   = "global/dev-team"
-  policy = file("${path.module}/policy-files/dev-team.hcl")
+resource "vault_policy" "pki_team_policy" {
+  name   = "global/pki-team"
+  policy = file("${path.module}/policy-files/pki-team.hcl")
 }

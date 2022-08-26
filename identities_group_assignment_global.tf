@@ -28,11 +28,11 @@ resource "vault_identity_group_member_entity_ids" "vault_admin_members" {
 ## Vault Dev Team Users
 ##
 ### https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/identity_group_member_entity_ids
-resource "vault_identity_group_member_entity_ids" "vault_dev_team_members" {
+resource "vault_identity_group_member_entity_ids" "vault_pki_team_members" {
   exclusive         = false
-  for_each          = toset(var.dev_team_users)
+  for_each          = toset(var.pki_team_users)
   member_entity_ids = [vault_identity_entity.vault_entities[each.key].id]
-  group_id          = vault_identity_group.global_vault_dev_team.id
+  group_id          = vault_identity_group.global_vault_pki_team.id
 }
 
 

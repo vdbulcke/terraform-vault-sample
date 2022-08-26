@@ -8,8 +8,8 @@ resource "vault_generic_endpoint" "mfa_totp" {
   depends_on           = []
   path                 = "identity/mfa/method/totp"
   ignore_absent_fields = true
-  disable_read  = true
-  write_fields = ["method_id"]
+  disable_read         = true
+  write_fields         = ["method_id"]
 
   data_json = jsonencode({
     ## (Required) 

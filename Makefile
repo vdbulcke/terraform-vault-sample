@@ -3,7 +3,7 @@ full-demo: cleanup init apply create-users
 
 
 fmt:
-	terraform fmt
+	terraform fmt -recursive
 
 validate:
 	terraform validate

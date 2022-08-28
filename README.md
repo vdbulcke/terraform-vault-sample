@@ -188,3 +188,26 @@ variable "vault_admin_users" {
 References: 
 
 - https://learn.hashicorp.com/tutorials/vault/active-directory-mfa-login-totp
+
+
+### Transit 
+
+* create token (or use generated file in `tutorial/` )
+```bash
+vault token create -policy=transit/demo/decrypt -policy=transit/demo/encrypt
+```
+
+* encrypt data
+```bash
+vault write transit/encrypt/demo plaintext=$(base64 <<< "hello world")
+```
+* decrypt data
+
+```bash
+vault write transit/decrypt/demo ciphertext=vault:v1:RlW+DVRaky3xX9M4ZlGc4pIVgrj1wJ7nkjDa3lVNMTHmmDoBHi2PBg==  -format=json | jq '.data.plaintext' -r | base64 -d 
+```
+
+* rotate keys (as admin)
+```bash
+vault write -f transit/keys/demo/rotate
+```

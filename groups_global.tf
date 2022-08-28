@@ -19,7 +19,7 @@ resource "vault_identity_group" "global_user_selfservice_password_reset" {
 resource "vault_identity_group" "global_vault_admin" {
   name                       = "global/vault-admin"
   type                       = "internal"
-  policies                   = ["global/vault-admin"]
+  policies                   = ["global/vault-admin",  "${vault_mount.transit.path}/admin"]
   external_member_entity_ids = true
 }
 

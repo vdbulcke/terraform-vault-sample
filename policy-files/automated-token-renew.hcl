@@ -8,17 +8,17 @@ path "auth/token/lookup-self" {
 
 ## Allow list of accessors token
 path "/auth/token/accessors" {
-  capabilities = [ "read", "list", "sudo"]
+  capabilities = [ "read", "list"]
 }
 
 ## Allow accessor tokens lookup 
 path "/auth/token/lookup-accessor" {
-  capabilities = [ "read", "update", "sudo"]
+  capabilities = [ "read", "update"]
 }
 
 
 ## Allow renew of accessors token 
 
 path "/auth/token/renew-accessor" {
-  capabilities = [ "read", "update", "sudo"]
+  capabilities = [ "read", "update"]
 }

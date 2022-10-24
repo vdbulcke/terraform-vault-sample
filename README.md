@@ -213,6 +213,25 @@ vault write transit/decrypt/demo ciphertext=vault:v1:RlW+DVRaky3xX9M4ZlGc4pIVgrj
 vault write -f transit/keys/demo/rotate
 ```
 
+#### Transit Software Security Module: JWT Signing
+
+In this tutorial, we have generated 2 non exportable private key pairs inside vault transit backend, and we request transit to sign a JWT payload.
+
+* Generate a signed (`RS256`) JWT with Transit RSA key
+```bash
+bash tutorial/transit-jwt-signing/rs256_jwt.sh
+```
+* Validated the signature via https://jwt.io (copy the JWT and the Public Key)
+
+* Generate a signed (`ES512`) JWT with Transit EC P-521 DSA with SHA-512  key
+```bash
+bash tutorial/transit-jwt-signing/es512_jwt.sh
+```
+* Validated the signature via https://jwt.io (copy the JWT and the Public Key)
+
+
+
+
 
 ### OIDC Token Generation 
 

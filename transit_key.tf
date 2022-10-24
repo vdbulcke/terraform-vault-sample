@@ -1,4 +1,11 @@
-
+# Enable transit secret engine
+## https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/transit_secret_backend_key
+resource "vault_mount" "transit" {
+  path                      = "transit"
+  type                      = "transit"
+  default_lease_ttl_seconds = 3600
+  max_lease_ttl_seconds     = 86400
+}
 
 module "demo_key" {
   source = "./modules/transit-key"
@@ -12,27 +19,32 @@ module "demo_key" {
   # min_encryption_version = 2
 }
 
-## https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/policy
-resource "vault_policy" "transit_admin" {
-  name   = "${vault_mount.transit.path}/admin"
-  policy = <<EOT
 
-# Enable transit secrets engine
-path "sys/mounts/${vault_mount.transit.path}" {
-  capabilities = [ "create", "read", "update", "delete", "list" ]
+
+
+module "transit_rsa_key" {
+  source = "./modules/transit-key"
+
+  transit_mount_path = vault_mount.transit.path
+  key_name           = "rsa"
+  key_type           = "rsa-4096"
+
+  ## After key rotation, use those variables
+  ## to disallowed using older keys
+  # min_decryption_version = 2
+  # min_encryption_version = 2
 }
 
-# To read enabled secrets engines
-path "sys/mounts" {
-  capabilities = [ "read" ]
-}
+module "transit_ecdsa_key" {
+  source = "./modules/transit-key"
 
-# Manage the transit secrets engine
-path "${vault_mount.transit.path}/*" {
-  capabilities = [ "create", "read", "update", "delete", "list" ]
-}
-EOT
-}
+  transit_mount_path = vault_mount.transit.path
+  key_name           = "ecdsa"
+  key_type           = "ecdsa-p521"
 
-
+  ## After key rotation, use those variables
+  ## to disallowed using older keys
+  # min_decryption_version = 2
+  # min_encryption_version = 2
+}
 

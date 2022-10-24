@@ -112,6 +112,8 @@ resource "vault_pki_secret_backend_role" "server_any_role" {
   allow_any_name    = true
   enforce_hostnames = false
 
+  use_csr_common_name = true
+
   ## Key USage
   server_flag = true
   client_flag = true

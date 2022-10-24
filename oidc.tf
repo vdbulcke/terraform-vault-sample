@@ -27,8 +27,8 @@ resource "vault_identity_oidc_key" "key" {
 }
 
 resource "vault_identity_oidc_role" "role" {
-  name = "role"
-  key  = vault_identity_oidc_key.key.name
+  name     = "role"
+  key      = vault_identity_oidc_key.key.name
   template = "{\"userinfo\": {\"groups\": {{identity.entity.groups.names}} },\"nbf\": {{time.now}},\"userid\": {{identity.entity.name}} }"
 }
 

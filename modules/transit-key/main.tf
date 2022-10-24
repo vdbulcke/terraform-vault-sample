@@ -35,3 +35,24 @@ path "${var.transit_mount_path}/decrypt/${var.key_name}" {
 EOT
 }
 
+
+## https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/policy
+resource "vault_policy" "transit_sign" {
+  name   = "${var.transit_mount_path}/${var.key_name}/sign"
+  policy = <<EOT
+path "${var.transit_mount_path}/sign/${var.key_name}/*" {
+   capabilities = [ "update" ]
+}
+EOT
+}
+
+## https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/policy
+resource "vault_policy" "transit_verify" {
+  name   = "${var.transit_mount_path}/${var.key_name}/verify"
+  policy = <<EOT
+path "${var.transit_mount_path}/verify/${var.key_name}/*" {
+   capabilities = [ "update" ]
+}
+EOT
+}
+

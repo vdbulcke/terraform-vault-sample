@@ -94,3 +94,16 @@ resource "vault_policy" "pki_team_policy" {
   name   = "global/pki-team"
   policy = file("${path.module}/policy-files/pki-team.hcl")
 }
+
+
+## https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/policy
+resource "vault_policy" "oidc_token_create" {
+  name   = "global/oidc-token"
+  policy =  <<EOT
+
+## Allow user self-service MFA
+path "identity/oidc/token/role" {
+  capabilities = [  "read"]
+}
+EOT
+}

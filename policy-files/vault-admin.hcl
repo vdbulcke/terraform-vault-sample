@@ -20,6 +20,15 @@ path "auth/*" {
   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
 }
 
+## Allow creating orphan token
+## https://developer.hashicorp.com/vault/docs/concepts/tokens#token-hierarchies-and-orphan-tokens
+path "auth/token/create" {
+  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
+
+path "auth/token/create-orphan" {
+  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
 
 # Configure auth methods
 path "sys/auth" {

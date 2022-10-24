@@ -189,8 +189,9 @@ References:
 
 - https://learn.hashicorp.com/tutorials/vault/active-directory-mfa-login-totp
 
+## Tutorial
 
-### Transit 
+### Transit  (Encryption as a Service)
 
 * create token (or use generated file in `tutorial/` )
 ```bash
@@ -211,3 +212,163 @@ vault write transit/decrypt/demo ciphertext=vault:v1:RlW+DVRaky3xX9M4ZlGc4pIVgrj
 ```bash
 vault write -f transit/keys/demo/rotate
 ```
+
+
+### OIDC Token Generation 
+
+* authenticate as "alice"
+```bash
+vault login -method=userpass username=alice 
+```
+
+* Generate an OIDC token for that user identity
+```bash
+vault read identity/oidc/token/role
+
+Key          Value
+---          -----
+client_id    6a1wS2Td8Xk06yJ6oJJEFnnbOA
+token        eyJhbGciOiJSUzI1NiIsImtpZCI6ImJjZTIwYjBjLWRjZTAtN2Q2Ny00MzBjLWZjYWZkMDQ2ZjI0MCJ9.eyJhdWQiOiI2YTF3UzJUZDhYazA2eUo2b0pKRUZubmJPQSIsImV4cCI6MTY2NjY4MTg5MywiaWF0IjoxNjY2NTk1NDkzLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgyMDAvdjEvaWRlbnRpdHkvb2lkYyIsIm5hbWVzcGFjZSI6InJvb3QiLCJuYmYiOjE2NjY1OTU0OTMsInN1YiI6ImU0YzE0MjE2LTBhYTgtZDE1My1mMTVjLTVhYzQxOTZkNWFiZCIsInVzZXJpZCI6ImFsaWNlQGUtY29ycC5jb20iLCJ1c2VyaW5mbyI6eyJncm91cHMiOlsiZ2xvYmFsL3VzZXItc2VsZnNlcnZpY2UtcGFzc3dvcmQtcmVzZXQiLCJnbG9iYWwvdmF1bHQtYWRtaW4iXX19.ZTpcgkWb_2qppROF56TYw3FnFt9m4ycd5OmNdJ3ESztRAAc3MtFPx7AqHrFbWW_9kVCcvWzPddxYTj_P7OGWByYozQGWqRW7cN8kAbemBBHoQ35XMl7JJ37iI8FdHgJN8p8ZttukDfg67rK9bQRzjxDDdxx7CPWaeqq-bbGAD1pDCMd2-M1cMrHLzG-ddLMnAiY-_yar0yzcHoQzqoesJb2Unz85RAlVMuAUSP2UKmq1dCPAwuTqiRJWyJ1Lbeyn4mh6EESMaSUZyDcY9krI35nRIwp1YclXokRSO_eJD-LgL2DK3FzqcHdGTvG36dT0wQPn3PkDHruqj-A7YCuhZQ
+ttl          24h
+
+
+```
+
+* you can decode with https://jwt.io/, and see the payload
+```json
+{
+  "aud": "6a1wS2Td8Xk06yJ6oJJEFnnbOA",
+  "exp": 1666681893,
+  "iat": 1666595493,
+  "iss": "http://127.0.0.1:8200/v1/identity/oidc",
+  "namespace": "root",
+  "nbf": 1666595493,
+  "sub": "e4c14216-0aa8-d153-f15c-5ac4196d5abd",
+  "userid": "alice@e-corp.com",
+  "userinfo": {
+    "groups": [
+      "global/user-selfservice-password-reset",
+      "global/vault-admin"
+    ]
+  }
+}
+```
+
+
+* The JWT payload can be templated
+```hcl
+resource "vault_identity_oidc_role" "role" {
+  name = "role"
+  key  = vault_identity_oidc_key.key.name
+  template = "{\"userinfo\": {\"groups\": {{identity.entity.groups.names}} },\"nbf\": {{time.now}},\"userid\": {{identity.entity.name}} }"
+}
+
+```
+
+#### Reference:
+
+- see inside [oidc.tf](./oidc.tf) for more details about configuration
+- https://developer.hashicorp.com/vault/docs/secrets/identity/identity-token
+
+### Token Management
+
+For example you need to generate token for performing backup:
+
+```
+vault token create -period=10m -display-name=backup -policy=global/backup -no-default-policy -orphan
+```
+
+>**WARNING:** By default (without `-orphan`) tokens created with `vault token create` inherit the identity  policies of token creator (in our demo will be the vault-admin). In most cases, this is not the desired behavior. If you only want to create a token without inheriting policies from its parent you MUST pass the  `-orphan`.
+
+
+#### Using Token Role
+
+For example, we created a token role `dev-impersonation` that allows a Vault admin to create a token for another identity
+
+
+* login as Vault admin 
+```bash
+vault login -method=userpass username=alice
+```
+
+* Create a token for `eve´ using this `dev-impersonation` role
+```bash
+vault token create   -role=dev-impersonation  -entity-alias=eve -ttl=12h
+
+Key                  Value
+---                  -----
+token                hvs.CAESIADTP3owDRhe2Br5_s6cI_LR0XUF6KQuPEfPV7yrf5C6Gh4KHGh2cy43cng0YWR4NDlHWGU1eDIxMno0RWl5akk
+token_accessor       6YNkERf1WmX9EOlcRYepTfXD
+token_duration       12h
+token_renewable      true
+token_policies       ["global/automated-token-renew" "global/oidc-token"]
+identity_policies    ["dev/admin" "global/user-selfservice-password-reset"]
+policies             ["dev/admin" "global/automated-token-renew" "global/oidc-token" "global/user-selfservice-password-reset"]
+
+```
+
+* Lookup this token to confirm this is for eve
+
+```bash
+vault token lookup -accessor 6YNkERf1WmX9EOlcRYepTfXD
+
+Key                            Value
+---                            -----
+accessor                       6YNkERf1WmX9EOlcRYepTfXD
+creation_time                  1666596304
+creation_ttl                   12h
+display_name                   token
+entity_id                      b78f9b1b-194c-a0b3-09e0-79ebd40ef80d
+expire_time                    2022-10-24T21:25:04.097814809+02:00
+explicit_max_ttl               0s
+external_namespace_policies    map[]
+id                             n/a
+identity_policies              [dev/admin global/user-selfservice-password-reset]
+issue_time                     2022-10-24T09:25:04.097820264+02:00
+meta                           <nil>
+num_uses                       0
+orphan                         true
+path                           auth/token/create/dev-impersonation
+policies                       [global/automated-token-renew global/oidc-token]
+renewable                      true
+role                           dev-impersonation
+ttl                            11h59m43s
+type                           service
+
+```
+
+* Lookup this identity
+
+```bash
+vault write identity/lookup/entity id=b78f9b1b-194c-a0b3-09e0-79ebd40ef80d
+
+Key                    Value
+---                    -----
+aliases                [map[canonical_id:b78f9b1b-194c-a0b3-09e0-79ebd40ef80d creation_time:2022-10-24T07:07:35.804094348Z custom_metadata:<nil> id:a7873666-5a06-dafa-4556-8e5c59c205d3 last_update_time:2022-10-24T07:07:35.804094348Z local:false merged_from_canonical_ids:<nil> metadata:<nil> mount_accessor:auth_token_f244c3bf mount_path:auth/token/ mount_type:token name:eve] map[canonical_id:b78f9b1b-194c-a0b3-09e0-79ebd40ef80d creation_time:2022-10-24T07:07:36.014257325Z custom_metadata:map[] id:fc1f5816-2f83-5623-2641-39fbec136938 last_update_time:2022-10-24T07:07:36.014257325Z local:false merged_from_canonical_ids:<nil> metadata:<nil> mount_accessor:auth_userpass_1fad22e9 mount_path:auth/userpass/ mount_type:userpass name:eve]]
+creation_time          2022-10-24T07:07:35.687744425Z
+direct_group_ids       [8d54ef54-bcd0-dca8-5d16-dfedfa86affb 524fc5b6-bbb6-203a-61ce-e586e3c5fdc1]
+disabled               false
+group_ids              [8d54ef54-bcd0-dca8-5d16-dfedfa86affb 524fc5b6-bbb6-203a-61ce-e586e3c5fdc1]
+id                     b78f9b1b-194c-a0b3-09e0-79ebd40ef80d
+inherited_group_ids    []
+last_update_time       2022-10-24T07:07:35.687744425Z
+merged_entity_ids      <nil>
+metadata               <nil>
+name                   eve@e-corp.com
+namespace_id           root
+policies               []
+
+```
+
+
+### Token Monitoring and Auto renew
+
+See [https://github.com/vdbulcke/vault-token-monitor](https://github.com/vdbulcke/vault-token-monitor).
+
+
+#### Reference
+
+* Role configuration can be found in [token_role.tf](./token_role.tf) and link between token alias and entity in [identities_userpass_alias.tf](./identities_userpass_alias.tf)
+* https://developer.hashicorp.com/vault/api-docs/secret/identity/lookup
+* https://developer.hashicorp.com/vault/docs/concepts/tokens
+* https://developer.hashicorp.com/vault/api-docs/auth/token#create-update-token-role

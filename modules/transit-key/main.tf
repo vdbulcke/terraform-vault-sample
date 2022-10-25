@@ -56,3 +56,13 @@ path "${var.transit_mount_path}/verify/${var.key_name}/*" {
 EOT
 }
 
+
+## https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/policy
+resource "vault_policy" "transit_read" {
+  name   = "${var.transit_mount_path}/${var.key_name}/read"
+  policy = <<EOT
+path "${var.transit_mount_path}/keys/${var.key_name}" {
+   capabilities = [ "read" ]
+}
+EOT
+}

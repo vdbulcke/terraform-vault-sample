@@ -109,6 +109,12 @@ path "sys/leases/*" {
   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
 }
 
+## https://github.com/hashicorp/vault/issues/9556 
+## allow non root admin to lookup leases in UI
+path "sys/leases/lookup" {
+  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
+
 # Manage everything in system backend
 path "sys/*" {
   capabilities = ["create", "read", "update", "delete", "list", "sudo"]

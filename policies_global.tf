@@ -130,3 +130,16 @@ path "${vault_mount.transit.path}/*" {
 }
 EOT
 }
+
+
+## https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/policy
+resource "vault_policy" "transit_operator" {
+  name   = "${vault_mount.transit.path}/operator"
+  policy = <<EOT
+
+# Manage the transit secrets engine
+path "${vault_mount.transit.path}/keys" {
+  capabilities = [  "read","list" ]
+}
+EOT
+}

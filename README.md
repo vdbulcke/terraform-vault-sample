@@ -238,6 +238,10 @@ The tutorial in [tutorial/oidc-server-integration/README.md](./tutorial/oidc-ser
 The tutorial in [tutorial/transit-import-key/README.md](./tutorial/transit-import-key/README.md) shows how you can import existing private key into transit backend using [https://github.com/vdbulcke/hc-vault-util](https://github.com/vdbulcke/hc-vault-util).
 
 
+#### Generating CSR From Transit Key
+
+The tutorial in [tutorial/transit-gencsr/README.md](./tutorial/transit-gencsr/README.md)  shows how you can generate Certificate Signing Request from private key in transit backend using [hc-vault-util](https://github.com/vdbulcke/hc-vault-util).
+
 ### OIDC Token Generation 
 
 * authenticate as "alice"

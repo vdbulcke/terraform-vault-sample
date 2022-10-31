@@ -230,7 +230,12 @@ bash tutorial/transit-jwt-signing/es512_jwt.sh
 * Validated the signature via https://jwt.io (copy the JWT and the Public Key)
 
 
+#### Using Transit In Mock OIDC Server
 
+The tutorial in [tutorial/oidc-server-integration/README.md](./tutorial/oidc-server-integration/README.md) shows how Vault transit backend has been integrated with [oidc-server](https://github.com/vdbulcke/oidc-server-demo) Mock server. 
+
+#### Importing Existing Private Key In Transit
+The tutorial in [tutorial/transit-import-key/README.md](./tutorial/transit-import-key/README.md) shows how you can import existing private key into transit backend using [https://github.com/vdbulcke/hc-vault-util](https://github.com/vdbulcke/hc-vault-util).
 
 
 ### OIDC Token Generation 
